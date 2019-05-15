@@ -1,0 +1,11 @@
+{
+  "name": "airtable-chores",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/rcdilorenzo/airtable-chores",
+  "author": "Christian Di Lorenzo <rcddeveloper@icloud.com>",
+  "license": "MIT",
+  "dependencies": {
+    "airtable": "^0.6.0"
+  }
+}
