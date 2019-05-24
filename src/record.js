@@ -1,21 +1,35 @@
 const R = require('ramda');
 const moment = require('node-moment');
+const strftime = require('strftime');
 
 const repeatex = require('./repeatex');
 
-const date = key => R.pipe(R.prop(key), moment, m => m.toDate());
+const toDate = key => R.pipe(R.prop(key), moment, m => m.toDate());
 
-const accessors = {
-  rec: R.prop('Rec'),
-  name: R.prop('Name'),
-  chores: R.prop('Chores'),
-  specificDayOfWeek: R.prop('Specific Day of Week'),
-  frequency: R.prop('Frequency'),
-  type: R.prop('Type'),
-  status: R.prop('Status'),
-  reoccurType: R.prop('Reoccur Type'),
-  dueDate: date('Due Date'),
-  completedDate: date('Completed Date')
+const dateLens = key => R.lens(toDate(key), d => strftime('%Y-%m-%d', d));
+
+const lenses = {
+  rec: R.lensProp('Rec'),
+  name: R.lensProp('Name'),
+  chores: R.lensProp('Chores'),
+  specificDayOfWeek: R.lensProp('Specific Day of Week'),
+  frequency: R.lensProp('Frequency'),
+  type: R.lensProp('Type'),
+  status: R.lensProp('Status'),
+  reoccurType: R.lensProp('Reoccur Type'),
+  dueDate: dateLens('Due Date'),
+  completedDate: dateLens('Completed Date')
+};
+
+const accessors = R.map(R.view, lenses);
+
+const prepareForArchive = record => {
+  const keys = [
+    'Name', 'Chores', 'Specific Day of Week', 'Frequency', 'Type', 'Status',
+    'Reoccur Type', 'Due Date', 'Completed Date'
+  ];
+
+  return R.pick(keys, record);
 };
 
 const reoccurDate = record => {
@@ -42,5 +56,7 @@ const nextDate = record => {
 
 module.exports = {
   ...accessors,
-  nextDate
+  nextDate,
+  reoccurDate,
+  prepareForArchive
 };

@@ -1,4 +1,5 @@
 const expect = require('chai').expect;
+const R = require('ramda');
 const Record = require('../src/record');
 
 describe('Record', () => {
@@ -56,4 +57,7 @@ describe('Record', () => {
     });
   });
 
+  it('prepares data for archive', () => {
+    expect(Record.prepareForArchive(data)).to.eql(R.omit(['Rec'], data));
+  });
 });
