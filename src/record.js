@@ -14,6 +14,7 @@ const dateLens = key => R.lens(getDate(key), setDate(key));
 const lenses = {
   rec: R.lensProp('Rec'),
   name: R.lensProp('Name'),
+  choreDescription: R.lensProp('Chore Description'),
   chores: R.lensProp('Chores'),
   specificDayOfWeek: R.lensProp('Specific Day of Week'),
   frequency: R.lensProp('Frequency'),
@@ -30,7 +31,7 @@ const setters = R.map(R.set, lenses);
 const prepareForArchive = record => {
   const keys = [
     'Name', 'Chores', 'Specific Day of Week', 'Frequency', 'Type', 'Status',
-    'Reoccur Type', 'Due Date', 'Completed Date'
+    'Chore Description', 'Reoccur Type', 'Due Date', 'Completed Date'
   ];
 
   return R.pick(keys, record);
@@ -63,6 +64,7 @@ const incrementNextDate = record => {
     .then(newDate => R.pipe(
       setters.status(null),
       setters.completedDate(null),
+      setters.choreDescription(null),
       setters.dueDate(newDate)
     )(record)
   );

@@ -9,9 +9,7 @@ const rows = () => {
       filterByFormula: "AND({Type} = 'Active', {Due Date} != '', {Completed Date} != '')"
     })
     .all()
-    .then(R.map(R.prop('fields')))
-    .then(R.tap(console.log))
-    .catch(console.log);
+    .then(R.map(data => ({ ...data.fields, id: data.id })));
 };
 
 const incrementAndInsert = R.pipe(
@@ -20,5 +18,7 @@ const incrementAndInsert = R.pipe(
 );
 
 module.exports = {
-  rows, incrementAndInsert
+  rows,
+  incrementAndInsert,
+  destroy: table.destroy
 };
