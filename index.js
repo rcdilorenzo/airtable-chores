@@ -1,9 +1,9 @@
 const R = require('ramda');
 const strftime = require('strftime');
 
-const Record = require('./record');
-const OriginTable = require('./origin_table');
-const DestTable = require('./dest_table');
+const Record = require('./src/record');
+const OriginTable = require('./src/origin_table');
+const DestTable = require('./src/dest_table');
 
 const log = msg => R.tap(() => console.log(msg));
 
@@ -33,9 +33,9 @@ const processRecord = record => {
 };
 
 const main = () => {
-  OriginTable.rows()
+  return OriginTable.rows()
     .then(records => Promise.all(records.map(processRecord)))
     .then(r => console.log(`Processed ${r.length} records`));
 };
 
-main();
+exports.handler = main;
