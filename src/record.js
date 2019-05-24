@@ -49,11 +49,14 @@ const reoccurDate = record => {
 };
 
 const nextDate = record => {
-  const { frequency } = accessors;
+  const { frequency, specificDayOfWeek } = accessors;
 
   const date = reoccurDate(record);
   if (date) {
-    return repeatex.nextDate(date, frequency(record));
+    return repeatex.nextDate(
+      date,
+      `${frequency(record)} ${specificDayOfWeek(record)}`
+    );
   } else {
     return Promise.resolve(null);
   }
@@ -72,6 +75,7 @@ const incrementNextDate = record => {
 
 module.exports = {
   ...accessors,
+  setters,
   nextDate,
   reoccurDate,
   prepareForArchive,

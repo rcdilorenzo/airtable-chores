@@ -13,7 +13,7 @@ describe('Record', () => {
     Type: 'Active',
     Status: 'On-Time',
     'Due Date': '2019-05-16',
-    'Completed Date': '2019-05-17',
+    'Completed Date': '2019-05-24',
     'Reoccur Type': 'After Due Date'
   };
 
@@ -22,7 +22,7 @@ describe('Record', () => {
   });
 
   it('parses completed date', () => {
-    expect(Record.completedDate(data)).to.eql(new Date(2019, 4, 17));
+    expect(Record.completedDate(data)).to.eql(new Date(2019, 4, 24));
   });
 
   it('determines next repeat date based on due date', done => {
@@ -34,23 +34,27 @@ describe('Record', () => {
   });
 
   it('determines next repeat date based on completion date', done => {
-    const modifiedData = {
-      ...data,
-      'Reoccur Type': 'After Completion'
-    };
+    const modifiedData = Record.setters.reoccurType('After Completion', data);
 
     Record.nextDate(modifiedData).then(nextDate => {
-      // June 14, 2019
-      expect(nextDate).to.eql(new Date(2019, 5, 14));
+      // June 20, 2019
+      expect(nextDate).to.eql(new Date(2019, 5, 20));
+      done();
+    });
+  });
+
+  it('fallback to dates when specific day of week not present', done => {
+    const modifiedData = Record.setters.specificDayOfWeek(null, data);
+
+    Record.nextDate(modifiedData).then(nextDate => {
+      // June 13, 2019
+      expect(nextDate).to.eql(new Date(2019, 5, 13));
       done();
     });
   });
 
   it('returns null date with an invalid reoccur type', done => {
-    const modifiedData = {
-      ...data,
-      'Reoccur Type': 'Not Yet Scheduled'
-    };
+    const modifiedData = Record.setters.reoccurType('Not Yet Scheduled', data);
 
     Record.nextDate(modifiedData).then(nextDate => {
       expect(nextDate).to.eql(null);

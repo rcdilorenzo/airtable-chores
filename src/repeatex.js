@@ -5,7 +5,7 @@ const strftime = require('strftime');
 const qs = require('query-string');
 const env = require('../env');
 
-const DAYS = ['sun', 'mond', 'tue', 'wed', 'thur', 'fri', 'sat'];
+const DAYS = ['Sun', 'Mond', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'];
 
 const _preprocess = (date, repeatDescription) =>
       R.any(d => repeatDescription.includes(d), DAYS) ?
