@@ -4,9 +4,12 @@ const strftime = require('strftime');
 
 const repeatex = require('./repeatex');
 
-const toDate = key => R.pipe(R.prop(key), moment, m => m.toDate());
+const getDate = key => R.pipe(R.prop(key), moment, m => m.toDate());
+const setDate = R.curry((key, date, object) =>
+  R.assoc(key, date ? strftime('%Y-%m-%d', date) : null, object)
+);
 
-const dateLens = key => R.lens(toDate(key), d => strftime('%Y-%m-%d', d));
+const dateLens = key => R.lens(getDate(key), setDate(key));
 
 const lenses = {
   rec: R.lensProp('Rec'),
@@ -22,6 +25,7 @@ const lenses = {
 };
 
 const accessors = R.map(R.view, lenses);
+const setters = R.map(R.set, lenses);
 
 const prepareForArchive = record => {
   const keys = [
@@ -54,9 +58,20 @@ const nextDate = record => {
   }
 };
 
+const incrementNextDate = record => {
+  return nextDate(record)
+    .then(newDate => R.pipe(
+      setters.status(null),
+      setters.completedDate(null),
+      setters.dueDate(newDate)
+    )(record)
+  );
+};
+
 module.exports = {
   ...accessors,
   nextDate,
   reoccurDate,
-  prepareForArchive
+  prepareForArchive,
+  incrementNextDate
 };

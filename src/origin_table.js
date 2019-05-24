@@ -1,5 +1,6 @@
 const R = require('ramda');
 const table = require('./airtable').client.origin;
+const Record = require('./record');
 
 const rows = () => {
   return table
@@ -13,6 +14,11 @@ const rows = () => {
     .catch(console.log);
 };
 
+const incrementAndInsert = R.pipe(
+  Record.incrementNextDate,
+  R.then(R.pipe(Record.prepareForArchive, table.create))
+);
+
 module.exports = {
-  rows
+  rows, incrementAndInsert
 };

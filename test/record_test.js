@@ -60,4 +60,24 @@ describe('Record', () => {
   it('prepares data for archive', () => {
     expect(Record.prepareForArchive(data)).to.eql(R.omit(['Rec'], data));
   });
+
+  it('increments next date', done => {
+    const expectedData = {
+      Rec: 1236,
+      Name: 'Jacob',
+      Chores: 'Check/swap/refill bathroom soap dispensers',
+      'Specific Day of Week': 'Thursday',
+      Frequency: 'Every 4 weeks',
+      Type: 'Active',
+      Status: null,
+      'Due Date': '2019-06-13',
+      'Completed Date': null,
+      'Reoccur Type': 'After Due Date'
+    };
+
+    Record.incrementNextDate(data).then(newData => {
+      expect(newData).to.eql(expectedData);
+      done();
+    });
+  });
 });
